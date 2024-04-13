@@ -19,23 +19,59 @@ namespace TankGame
         public static int WindowWidth { get; set; }
         public static int WindowHeight { get; set; }
 
+        private static int gridWidth = 15;
+        private static int gridHeight = 15;
+
         private static Dictionary<WallType, Image> wallImage = new Dictionary<WallType, Image>()
         {
             [WallType.Wall] = Properties.Resources.wall,
             [WallType.Steel] = Properties.Resources.steel,
         };
-
         private static Dictionary<WallType, List<UnMovable>> wallList = new Dictionary<WallType, List<UnMovable>>()
         {
             [WallType.Wall] = new List<UnMovable>(),
             [WallType.Steel] = new List<UnMovable>(),
         };
+        private static List<Enemy> enemyTankList = new List<Enemy>();
 
         private static UnMovable theBase;
         private static Player player;
 
-        private static int gridWidth = 15;
-        private static int gridHeight = 15;
+        private static Point[] enemyInitialPostions;
+
+        // one per 60 frame
+        private static int enemyCreateSpeed = 60;
+        // 初始生成一个敌人
+        private static int enemyCreateCount = 60;
+
+        public static void Start()
+        {
+            enemyInitialPostions = new Point[3];
+            enemyInitialPostions[0] = new Point(0, 0);
+            enemyInitialPostions[1] = new Point(12 * gridWidth, 0);
+            enemyInitialPostions[2] = new Point(24 * gridWidth, 0);
+
+            Enemy.InitializationEnemy();
+        }
+
+        public static void Update()
+        {
+            foreach (var list in wallList.Values)
+            {
+                foreach (UnMovable wall in list)
+                {
+                    wall.Update();
+                }
+            }
+            theBase.Update();
+            player.Update();
+
+            EnemyCreate();
+            foreach (var tank in enemyTankList)
+            {
+                tank.Update();
+            }
+        }
 
         public static void CreateMap()
         {
@@ -70,20 +106,27 @@ namespace TankGame
 
             CreateBase(12, 28);
         }
-
-        public static void Update()
-        {
-            foreach (var list in wallList.Values)
-            {
-                foreach (UnMovable wall in list)
-                {
-                    wall.Update();
-                }
-            }
-            theBase.Update();
-            player.Update();
-        }
         
+        public static void CreatePlayer(int x, int y, int speed, Direction dir = Direction.Up)
+        {
+            player = new Player(x * gridWidth, y * gridHeight, speed, WindowWidth, WindowHeight, dir);
+        }
+
+        private static void EnemyCreate()
+        {
+            enemyCreateCount++;
+            if (enemyCreateCount < enemyCreateSpeed) return;
+
+            enemyCreateCount = 0;
+
+            Random rd = new Random();
+            int index = rd.Next(0, 3);
+            Point position = enemyInitialPostions[index];
+
+            EnemyType tanktype = (EnemyType)rd.Next(0, (int)EnemyType.Count);
+            Enemy tank = new Enemy(position.X, position.Y, WindowWidth, WindowHeight, tanktype);
+            enemyTankList.Add(tank);
+        }
 
         // TODO: 四叉树优化
         public static UnMovable CollidedWhichWall(Rectangle rect)
@@ -104,11 +147,6 @@ namespace TankGame
                 return theBase;
 
             return null;
-        }
-
-        public static void CreatePlayer(int x, int y, int speed, Direction dir = Direction.Up)
-        {
-            player = new Player(x * gridWidth, y * gridHeight, speed, WindowWidth, WindowHeight, dir);
         }
 
         // x,y: grid axis

@@ -21,6 +21,7 @@ namespace TankGame
         public static void Start()
         {
             // only create once
+            GameObjectManager.Start();
             GameObjectManager.CreateMap();
             GameObjectManager.CreatePlayer(8, 28, 2);
         }

@@ -23,8 +23,8 @@ namespace TankGame
 
             BitmapUp = Properties.Resources.MyTankUp;
             BitmapDown = Properties.Resources.MyTankDown;
-            BitmapRight = Properties.Resources.MyTankRight;
             BitmapLeft = Properties.Resources.MyTankLeft;
+            BitmapRight = Properties.Resources.MyTankRight;
 
             this.Dir = dir;
         }
@@ -36,8 +36,8 @@ namespace TankGame
             {
                 case Keys.W: Dir = Direction.Up; break;
                 case Keys.S: Dir = Direction.Down; break;
-                case Keys.D: Dir = Direction.Right; break;
                 case Keys.A: Dir = Direction.Left; break;
+                case Keys.D: Dir = Direction.Right; break;
             }
         }
 
@@ -56,8 +56,8 @@ namespace TankGame
                 {
                     case Direction.Up: Y -= Speed; break;
                     case Direction.Down: Y += Speed; break;
-                    case Direction.Right: X += Speed; break;
                     case Direction.Left: X -= Speed; break;
+                    case Direction.Right: X += Speed; break;
                 }
 
             }
@@ -80,8 +80,8 @@ namespace TankGame
             {
                 case Direction.Up: rectNext.Y -= Speed; break;
                 case Direction.Down: rectNext.Y += Speed; break;
-                case Direction.Right: rectNext.X += Speed; break;
                 case Direction.Left: rectNext.X -= Speed; break;
+                case Direction.Right: rectNext.X += Speed; break;
             }
             if (GameObjectManager.CollidedWhichWall(rectNext) != null)
             {

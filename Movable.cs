@@ -12,7 +12,7 @@ namespace TankGame
         Up,
         Down,
         Left,
-        Right
+        Right,
     }
     class Movable : GameObject
     {
@@ -23,6 +23,7 @@ namespace TankGame
         public Bitmap BitmapDown { get; set; }
         public Bitmap BitmapLeft { get; set; }
         public Bitmap BitmapRight { get; set; }
+
 
         public int Speed { get; set; }
 
@@ -36,8 +37,8 @@ namespace TankGame
                 {
                     case Direction.Up: bmp = (Bitmap)BitmapUp.Clone(); break;
                     case Direction.Down : bmp = (Bitmap)BitmapDown.Clone(); break;
-                    case Direction.Right : bmp = (Bitmap)BitmapRight.Clone(); break;
                     case Direction.Left: bmp = (Bitmap)BitmapLeft.Clone(); break;
+                    case Direction.Right : bmp = (Bitmap)BitmapRight.Clone(); break;
                 }
                 Width = bmp.Width;
                 Height = bmp.Height;
@@ -45,7 +46,6 @@ namespace TankGame
                 
         }
         
-
         protected override Image GetImage()
         {
             Bitmap matchBitmap = null;
@@ -72,5 +72,6 @@ namespace TankGame
             matchBitmap.MakeTransparent(Color.Black);
             return matchBitmap;
         }
+
     }
 }
