@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -71,9 +72,21 @@ namespace TankGame
                 case Direction.Down when Y + Speed + Height > WindowHeigth: 
                 case Direction.Left when X - Speed < 0: 
                 case Direction.Right when X + Speed + Width > WindowWidth: IsMoving = false; break;
-            } 
+            }
 
             // 碰撞检测
+            Rectangle rectNext = GetRectangle();
+            switch (Dir)
+            {
+                case Direction.Up: rectNext.Y -= Speed; break;
+                case Direction.Down: rectNext.Y += Speed; break;
+                case Direction.Right: rectNext.X += Speed; break;
+                case Direction.Left: rectNext.X -= Speed; break;
+            }
+            if (GameObjectManager.CollidedWhichWall(rectNext) != null)
+            {
+                IsMoving = false;
+            }
         }
 
         public void KeyUp(KeyEventArgs args)

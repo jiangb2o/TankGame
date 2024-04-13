@@ -83,6 +83,29 @@ namespace TankGame
             theBase.Update();
             player.Update();
         }
+        
+
+        // TODO: 四叉树优化
+        public static UnMovable CollidedWhichWall(Rectangle rect)
+        {
+            // 墙体
+            foreach (var list in wallList.Values)
+            {
+                foreach (UnMovable wall in list)
+                {
+                    if(wall.GetRectangle().IntersectsWith(rect))
+                     {
+                        return wall;
+                    }
+                }
+            }
+            // 基地
+            if (theBase.GetRectangle().IntersectsWith(rect))
+                return theBase;
+
+            return null;
+        }
+
         public static void CreatePlayer(int x, int y, int speed, Direction dir = Direction.Up)
         {
             player = new Player(x * gridWidth, y * gridHeight, speed, WindowWidth, WindowHeight, dir);
