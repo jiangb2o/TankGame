@@ -29,15 +29,17 @@ namespace TankGame
             this.Dir = dir;
         }
 
+        // KeyDown 可能与 GameMainThread 中 GetImage 同时使用Bitmap造成冲突
         public void KeyDown(KeyEventArgs args)
         {
             IsMoving = true;
             switch(args.KeyCode)
             {
-                case Keys.W: Dir = Direction.Up; break;
-                case Keys.S: Dir = Direction.Down; break;
-                case Keys.A: Dir = Direction.Left; break;
-                case Keys.D: Dir = Direction.Right; break;
+                // 方向相同时不进行改变, 降低方向改变时使用Bitmap频率, 降低锁冲突
+                case Keys.W when Dir != Direction.Up: Dir = Direction.Up; break;
+                case Keys.S when Dir != Direction.Down: Dir = Direction.Down; break;
+                case Keys.A when Dir != Direction.Left: Dir = Direction.Left; break;
+                case Keys.D when Dir != Direction.Right: Dir = Direction.Right; break;
             }
         }
 

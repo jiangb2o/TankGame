@@ -16,6 +16,8 @@ namespace TankGame
     }
     class Movable : GameObject
     {
+        private Object _lock = new object();
+
         public int WindowWidth { get; set; }
         public int WindowHeigth { get; set; }
 
@@ -33,43 +35,60 @@ namespace TankGame
             {
                 dir = value;
                 Bitmap bmp = null;
+
                 switch (dir)
                 {
-                    case Direction.Up: bmp = (Bitmap)BitmapUp.Clone(); break;
-                    case Direction.Down : bmp = (Bitmap)BitmapDown.Clone(); break;
-                    case Direction.Left: bmp = (Bitmap)BitmapLeft.Clone(); break;
-                    case Direction.Right : bmp = (Bitmap)BitmapRight.Clone(); break;
+                    case Direction.Up: bmp = BitmapUp; break;
+                    case Direction.Down: bmp = BitmapDown; break;
+                    case Direction.Left: bmp = BitmapLeft; break;
+                    case Direction.Right: bmp = BitmapRight; break;
                 }
-                Width = bmp.Width;
-                Height = bmp.Height;
+                // 事件处理线程中改变方向使用Bitmap资源. 本程序DrawSelf()中也要使用Bitmap资源,
+                // 可能同时使用相同资源导致冲突.
+                // 加锁解决冲突
+                lock (_lock)
+                {
+                    Width = bmp.Width;
+                    Height = bmp.Height;
+                }
+                
             }
                 
         }
-        
+
+        public override void DrawSelf()
+        {
+            lock(_lock)
+            {
+                base.DrawSelf();
+            }
+        }
+
         protected override Image GetImage()
         {
             Bitmap matchBitmap = null;
             switch (Dir)
             {
-                // 使用bitmap副本, 防止Bitmap同时被多个方法调用 或跨进程使用
                 case Direction.Up:
-                    matchBitmap = (Bitmap)BitmapUp.Clone();
+                    matchBitmap = BitmapUp;
                     break;
                 case Direction.Down:
-                    matchBitmap = (Bitmap)BitmapDown.Clone();
+                    matchBitmap = BitmapDown;
                     break;
                 case Direction.Left:
-                    matchBitmap = (Bitmap)BitmapLeft.Clone();
+                    matchBitmap = BitmapLeft;
                     break;
                 case Direction.Right:
-                    matchBitmap = (Bitmap)BitmapRight.Clone();
+                    matchBitmap = BitmapRight;
                     break;
                 default:
-                    matchBitmap = (Bitmap)BitmapUp.Clone();
+                    matchBitmap = BitmapUp;
                     break;
             }
+
             // 黑色背景改为透明
             matchBitmap.MakeTransparent(Color.Black);
+            
             return matchBitmap;
         }
 
