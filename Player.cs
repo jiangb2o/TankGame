@@ -126,6 +126,7 @@ namespace TankGame
                     y += Height / 2;
                     break;
             }
+            // 可能与GameMainThread 中 GameObjectManager Update中遍历同时进行发生冲突
             GameObjectManager.CreateBullet(x, y, Dir, BulletBelong.Player);
         }
 

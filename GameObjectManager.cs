@@ -22,6 +22,8 @@ namespace TankGame
         private static int gridWidth = 15;
         private static int gridHeight = 15;
 
+        private static readonly Object _bulletListLock = new object();
+
         private static Dictionary<UnmovableType, Image> wallImage = new Dictionary<UnmovableType, Image>()
         {
             [UnmovableType.Wall] = Properties.Resources.wall,
@@ -78,9 +80,12 @@ namespace TankGame
                 tank.Update();
             }
 
-            foreach (var bullet in bulletList)
+            lock(_bulletListLock)
             {
-                bullet.Update();
+                foreach (var bullet in bulletList)
+                {
+                    bullet.Update();
+                }
             }
             DestroyBullet();
 
@@ -133,7 +138,11 @@ namespace TankGame
         public static void CreateBullet(int x, int y, Direction dir, BulletBelong belong)
         {
             Bullet bullet = new Bullet(x, y, 8, WindowWidth, WindowHeight, dir, belong);
-            bulletList.Add(bullet);
+            // 按键监听空格线程调用此方法, 可能与GameMainThread中遍历bulletList冲突
+            lock(_bulletListLock)
+            {
+                bulletList.Add(bullet);
+            }
         }
 
         private static void CreateEnemy()
