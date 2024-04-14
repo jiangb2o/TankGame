@@ -10,13 +10,21 @@ namespace TankGame
 {
     class Player : Movable
     {
+        private int originalX;
+        private int originalY;
+        private int originalHP = 4;
+
         public bool IsMoving { get; set; }
+        public int HP { get; set; }
+
 
         public Player(int x, int y, int speed, int windowWidth, int windowHeight, Direction dir = Direction.Up)
         {
             IsMoving = false;
             this.X = x;
             this.Y = y;
+            originalX = x;
+            originalY = y;
             this.Speed = speed;
             this.WindowWidth = windowWidth;
             this.WindowHeigth = windowHeight;
@@ -27,6 +35,8 @@ namespace TankGame
             BitmapRight = Properties.Resources.MyTankRight;
             // Dir set方法中使用了Bitmap, 所以先对Bitmap复制再给Dir赋值
             this.Dir = dir;
+
+            this.HP = originalHP;
         }
 
         // KeyDown 可能与 GameMainThread 中 GetImage 同时使用Bitmap造成冲突
@@ -122,5 +132,18 @@ namespace TankGame
         {
             IsMoving = false;
         }
+
+        public void TakeDamage()
+        {
+            HP--;
+            if(HP <= 0)
+            {
+                X = originalX;
+                Y = originalY;
+                HP = originalHP;
+            }
+
+        }
+
     }
 }

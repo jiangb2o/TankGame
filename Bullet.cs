@@ -94,7 +94,18 @@ namespace TankGame
                     GameObjectManager.DestroyEnemy(enemy);
                     GameObjectManager.CreateAnimation(xAnimation, yAnimation, AnimationType.Explosion);
                 }
+            } else if (this.BelongTo == BulletBelong.Enemy)
+            {
+                Player player = null;
+                player = GameObjectManager.CollidedPlayer(rect);
+                if(player != null)
+                {
+                    IsDestroy = true;
+                    player.TakeDamage();
+                    GameObjectManager.CreateAnimation(xAnimation, yAnimation, AnimationType.Explosion);
+                }
             }
+            
         }
     }
 }

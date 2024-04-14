@@ -267,6 +267,14 @@ namespace TankGame
             return null;
         }
 
+        public static Player CollidedPlayer(Rectangle rect)
+        {
+            if(player.GetRectangle().IntersectsWith(rect))
+            {
+                return player;
+            }
+            return null;
+        }
 
         public static void KeyDown(KeyEventArgs args)
         {
