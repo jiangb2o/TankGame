@@ -34,6 +34,7 @@ namespace TankGame
         };
         private static List<Enemy> enemyTankList = new List<Enemy>();
         private static List<Bullet> bulletList = new List<Bullet>();
+        private static List<Animation> animationList = new List<Animation>();
 
         private static UnMovable theBase;
         private static Player player;
@@ -71,18 +72,23 @@ namespace TankGame
 
             player.Update();
 
-            EnemyCreate();
+            CreateEnemy();
             foreach (var tank in enemyTankList)
             {
                 tank.Update();
             }
 
-            DestroyBullet();
             foreach (var bullet in bulletList)
             {
                 bullet.Update();
             }
+            DestroyBullet();
 
+            foreach(Animation animation in animationList)
+            {
+                animation.Update();
+            }
+            DestroyAnimation();
         }
 
         public static void CreateMap()
@@ -130,7 +136,7 @@ namespace TankGame
             bulletList.Add(bullet);
         }
 
-        private static void EnemyCreate()
+        private static void CreateEnemy()
         {
             enemyCreateCount++;
             if (enemyCreateCount < enemyCreateSpeed) return;
@@ -144,6 +150,12 @@ namespace TankGame
             EnemyType tanktype = (EnemyType)rd.Next(0, (int)EnemyType.Count);
             Enemy tank = new Enemy(position.X, position.Y, WindowWidth, WindowHeight, tanktype);
             enemyTankList.Add(tank);
+        }
+
+        public static void CreateAnimation(int x, int y, AnimationType animationType)
+        {
+            Animation animation = new Animation(x, y, animationType);
+            animationList.Add(animation);
         }
 
         // x,y: grid axis
@@ -179,7 +191,7 @@ namespace TankGame
             List<Bullet> needDestroy = new List<Bullet>();
             foreach(Bullet bullet in bulletList)
             {
-                if(bullet.isDestroy)
+                if(bullet.IsDestroy)
                 {
                     needDestroy.Add(bullet);
                 }
@@ -203,6 +215,22 @@ namespace TankGame
         public static void DestroyEnemy(Enemy enemy)
         {
             enemyTankList.Remove(enemy);
+        }
+
+        public static void DestroyAnimation()
+        {
+            List<Animation> needDestroy = new List<Animation>();
+            foreach (Animation animation in animationList)
+            {
+                if (animation.PlayOver)
+                {
+                    needDestroy.Add(animation);
+                }
+            }
+            foreach (Animation animation in needDestroy)
+            {
+                animationList.Remove(animation);
+            }
         }
             
 

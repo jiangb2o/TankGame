@@ -16,7 +16,7 @@ namespace TankGame
     class Bullet : Movable
     {
         public BulletBelong BelongTo;
-        public bool isDestroy = false;
+        public bool IsDestroy = false;
 
         public Bullet(int x, int y, int speed, int windowWidth, int windowHeight, Direction dir, BulletBelong belong)
         {
@@ -57,10 +57,12 @@ namespace TankGame
                 case Direction.Left when X + Width / 2 < 0:
                 case Direction.Right when X + Width / 2 > WindowWidth:
                     // 标记要销毁的子弹, 不能直接销毁, 外面正在遍历bulletList, 不能直接从bulletList中删除
-                    isDestroy = true;
+                    IsDestroy = true;
                     return;
             }
 
+            int xAnimation = this.X + Width / 2;
+            int yAnimation = this.Y + Height / 2;
             // 碰撞检测
             // Unmovable: wall, steel, base
             // enemy
@@ -69,7 +71,7 @@ namespace TankGame
             collidedObject = GameObjectManager.CollidedWhichWall(rect);
             if (collidedObject != null)
             {
-                isDestroy = true;
+                IsDestroy = true;
                 if(collidedObject.MyType == UnmovableType.Wall)
                 { 
                     GameObjectManager.DestroyWall(collidedObject);
@@ -78,6 +80,7 @@ namespace TankGame
                 {
                     GameObjectManager.DestroyTheBase(collidedObject);
                 }
+                GameObjectManager.CreateAnimation(xAnimation, yAnimation, AnimationType.Explosion);
             }
 
             // 与敌人进行碰撞检测
@@ -87,8 +90,9 @@ namespace TankGame
                 enemy = GameObjectManager.CollidedWichEnemy(rect);
                 if(enemy != null)
                 {
-                    isDestroy = true;
+                    IsDestroy = true;
                     GameObjectManager.DestroyEnemy(enemy);
+                    GameObjectManager.CreateAnimation(xAnimation, yAnimation, AnimationType.Explosion);
                 }
             }
         }
