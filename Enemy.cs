@@ -68,17 +68,6 @@ namespace TankGame
             base.Update();
         }
 
-        private void Move()
-        {
-            switch (Dir)
-            {
-                case Direction.Up: Y -= Speed; break;
-                case Direction.Down: Y += Speed; break;
-                case Direction.Left: X -= Speed; break;
-                case Direction.Right: X += Speed; break;
-            }
-        }
-
         private void MoveCheck()
         {
             // 不超出窗体

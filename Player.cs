@@ -25,7 +25,7 @@ namespace TankGame
             BitmapDown = Properties.Resources.MyTankDown;
             BitmapLeft = Properties.Resources.MyTankLeft;
             BitmapRight = Properties.Resources.MyTankRight;
-
+            // Dir set方法中使用了Bitmap, 所以先对Bitmap复制再给Dir赋值
             this.Dir = dir;
         }
 
@@ -40,29 +40,22 @@ namespace TankGame
                 case Keys.S when Dir != Direction.Down: Dir = Direction.Down; break;
                 case Keys.A when Dir != Direction.Left: Dir = Direction.Left; break;
                 case Keys.D when Dir != Direction.Right: Dir = Direction.Right; break;
+                // 发射子弹
+                case Keys.Space:
+                    IsMoving = false;
+                    Attack();
+                    break;
             }
         }
 
         public override void Update()
         {
             MoveCheck();
-            Move();
-            base.Update();
-        }
-
-        private void Move()
-        {
-            if(IsMoving)
+            if (IsMoving)
             {
-                switch (Dir)
-                {
-                    case Direction.Up: Y -= Speed; break;
-                    case Direction.Down: Y += Speed; break;
-                    case Direction.Left: X -= Speed; break;
-                    case Direction.Right: X += Speed; break;
-                }
-
+                Move();
             }
+            base.Update();
         }
 
         private void MoveCheck()
@@ -89,6 +82,30 @@ namespace TankGame
             {
                 IsMoving = false;
             }
+        }
+
+        private void Attack()
+        {
+            int x = this.X;
+            int y = this.Y;
+            switch(Dir)
+            {
+                case Direction.Up:
+                    x += Width / 2;
+                    break;
+                case Direction.Down:
+                    x += Width / 2;
+                    y += Height;
+                    break;
+                case Direction.Left:
+                    y += Height / 2;
+                    break;
+                case Direction.Right:
+                    x += Width;
+                    y += Height / 2;
+                    break;
+            }
+            GameObjectManager.CreateBullet(x, y, Dir, BulletBelong.Player);
         }
 
         public void KeyUp(KeyEventArgs args)

@@ -16,7 +16,7 @@ namespace TankGame
     }
     class Movable : GameObject
     {
-        private Object _lock = new object();
+        private readonly object _lock = new object();
 
         public int WindowWidth { get; set; }
         public int WindowHeigth { get; set; }
@@ -61,6 +61,17 @@ namespace TankGame
             lock(_lock)
             {
                 base.DrawSelf();
+            }
+        }
+
+        protected void Move()
+        {
+            switch (Dir)
+            {
+                case Direction.Up: Y -= Speed; break;
+                case Direction.Down: Y += Speed; break;
+                case Direction.Left: X -= Speed; break;
+                case Direction.Right: X += Speed; break;
             }
         }
 

@@ -33,6 +33,7 @@ namespace TankGame
             [WallType.Steel] = new List<UnMovable>(),
         };
         private static List<Enemy> enemyTankList = new List<Enemy>();
+        private static List<Bullet> bulletList = new List<Bullet>();
 
         private static UnMovable theBase;
         private static Player player;
@@ -71,6 +72,13 @@ namespace TankGame
             {
                 tank.Update();
             }
+
+            DestroyBullet();
+            foreach (var bullet in bulletList)
+            {
+                bullet.Update();
+            }
+
         }
 
         public static void CreateMap()
@@ -91,7 +99,7 @@ namespace TankGame
 
             CreateWall(0, 15, 2, 1, WallType.Steel);
             CreateWall(24, 15, 2, 1, WallType.Steel);
-            
+
             CreateWall(2, 18, 2, 10, WallType.Wall);
             CreateWall(6, 18, 2, 10, WallType.Wall);
             CreateWall(10, 16, 2, 8, WallType.Wall);
@@ -106,10 +114,42 @@ namespace TankGame
 
             CreateBase(12, 28);
         }
-        
+
         public static void CreatePlayer(int x, int y, int speed, Direction dir = Direction.Up)
         {
             player = new Player(x * gridWidth, y * gridHeight, speed, WindowWidth, WindowHeight, dir);
+        }
+
+        public static void CreateBullet(int x, int y, Direction dir, BulletBelong belong)
+        {
+            Bullet bullet = new Bullet(x, y, 8, WindowWidth, WindowHeight, dir, belong);
+            bulletList.Add(bullet);
+        }
+
+        public static void DestroyBullet()
+        {
+            List<Bullet> needDestroy = new List<Bullet>();
+            foreach(Bullet bullet in bulletList)
+            {
+                if(bullet.isDestroy)
+                {
+                    needDestroy.Add(bullet);
+                }
+            }
+            foreach(Bullet bullet in needDestroy)
+            {
+                bulletList.Remove(bullet);
+            }
+        }
+
+        public static void DestroyWall(UnMovable wall)
+        {
+
+        }
+
+        public static void DestroyEnemy(Enemy enemy)
+        {
+
         }
 
         private static void EnemyCreate()
@@ -136,8 +176,8 @@ namespace TankGame
             {
                 foreach (UnMovable wall in list)
                 {
-                    if(wall.GetRectangle().IntersectsWith(rect))
-                     {
+                    if (wall.GetRectangle().IntersectsWith(rect))
+                    {
                         return wall;
                     }
                 }
