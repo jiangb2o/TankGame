@@ -16,16 +16,19 @@ namespace TankGame
             set { img = value; Width = img.Width; Height = img.Height; }
         }
 
+        public UnmovableType MyType { get; set; }
+
         protected override Image GetImage()
         {
             return Img;
         }
 
-        public UnMovable(int x, int y, Image img)
+        public UnMovable(int x, int y, Image img, UnmovableType type)
         {
             this.X = x;
             this.Y = y;
             this.Img = img;
+            this.MyType = type;
         }
     }
 }

@@ -62,18 +62,25 @@ namespace TankGame
             }
 
             // 碰撞检测
-            Rectangle rectNext = GetRectangle();
-            switch (Dir)
+            // Wall: wall, steel
+            // enemy
+            // base
+            Rectangle rect = GetRectangle();
+            UnMovable collidedObject = null;
+            collidedObject = GameObjectManager.CollidedWhichWall(rect);
+            if (collidedObject != null)
             {
-                case Direction.Up: rectNext.Y -= Speed; break;
-                case Direction.Down: rectNext.Y += Speed; break;
-                case Direction.Left: rectNext.X -= Speed; break;
-                case Direction.Right: rectNext.X += Speed; break;
+                isDestroy = true;
+                if(collidedObject.MyType == UnmovableType.Wall)
+                { 
+                    GameObjectManager.DestroyWall(collidedObject);
+                }
+                else if(collidedObject.MyType == UnmovableType.TheBase)
+                {
+                    GameObjectManager.DestroyTheBase(collidedObject);
+                }
             }
-            if (GameObjectManager.CollidedWhichWall(rectNext) != null)
-            {
-                
-            }
+
         }
     }
 }
