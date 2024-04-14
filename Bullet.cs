@@ -79,6 +79,7 @@ namespace TankGame
                 else if(collidedObject.MyType == UnmovableType.TheBase)
                 {
                     GameObjectManager.DestroyTheBase(collidedObject);
+                    GameFramwork.GameOver();
                 }
                 GameObjectManager.CreateAnimation(xAnimation, yAnimation, AnimationType.Explosion);
             }
