@@ -106,6 +106,7 @@ namespace TankGame
 
         private void Attack()
         {
+            SoundManager.PlayFire();
             int x = this.X;
             int y = this.Y;
             switch(Dir)

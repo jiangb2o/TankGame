@@ -141,6 +141,7 @@ namespace TankGame
             enemyCreateCount++;
             if (enemyCreateCount < enemyCreateSpeed) return;
 
+            SoundManager.PlayAdd();
             enemyCreateCount = 0;
 
             Random rd = new Random();

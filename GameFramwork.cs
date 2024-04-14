@@ -36,6 +36,9 @@ namespace TankGame
             GameObjectManager.Start();
             GameObjectManager.CreateMap();
             GameObjectManager.CreatePlayer(8, 28, 2);
+
+            SoundManager.InitSound();
+            SoundManager.PlayStart();
         }
 
         public static void Update()

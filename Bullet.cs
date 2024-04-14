@@ -72,16 +72,22 @@ namespace TankGame
             if (collidedObject != null)
             {
                 IsDestroy = true;
-                if(collidedObject.MyType == UnmovableType.Wall)
-                { 
-                    GameObjectManager.DestroyWall(collidedObject);
-                }
-                else if(collidedObject.MyType == UnmovableType.TheBase)
+                if (collidedObject.MyType == UnmovableType.Steel)
                 {
-                    GameObjectManager.DestroyTheBase(collidedObject);
-                    GameFramwork.GameOver();
+                    //SoundManager.Playhit();
+                } else
+                {
+                    if (collidedObject.MyType == UnmovableType.Wall)
+                    {
+                        GameObjectManager.DestroyWall(collidedObject);                    }
+                    else if (collidedObject.MyType == UnmovableType.TheBase)
+                    {
+                        GameObjectManager.DestroyTheBase(collidedObject);
+                        GameFramwork.GameOver();
+                    }
+                    SoundManager.PlayBlast();
+                    GameObjectManager.CreateAnimation(xAnimation, yAnimation, AnimationType.Explosion);
                 }
-                GameObjectManager.CreateAnimation(xAnimation, yAnimation, AnimationType.Explosion);
             }
 
             // 与敌人进行碰撞检测
@@ -93,6 +99,7 @@ namespace TankGame
                 {
                     IsDestroy = true;
                     GameObjectManager.DestroyEnemy(enemy);
+                    SoundManager.PlayBlast();
                     GameObjectManager.CreateAnimation(xAnimation, yAnimation, AnimationType.Explosion);
                 }
             } else if (this.BelongTo == BulletBelong.Enemy)
@@ -103,6 +110,7 @@ namespace TankGame
                 {
                     IsDestroy = true;
                     player.TakeDamage();
+                    SoundManager.PlayHit();
                     GameObjectManager.CreateAnimation(xAnimation, yAnimation, AnimationType.Explosion);
                 }
             }
