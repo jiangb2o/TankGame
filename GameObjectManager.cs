@@ -130,39 +130,6 @@ namespace TankGame
             bulletList.Add(bullet);
         }
 
-        public static void DestroyBullet()
-        {
-            List<Bullet> needDestroy = new List<Bullet>();
-            foreach(Bullet bullet in bulletList)
-            {
-                if(bullet.isDestroy)
-                {
-                    needDestroy.Add(bullet);
-                }
-            }
-            foreach(Bullet bullet in needDestroy)
-            {
-                bulletList.Remove(bullet);
-            }
-        }
-
-        public static void DestroyWall(UnMovable wall)
-        {
-            wallList[UnmovableType.Wall].Remove(wall);
-        }
-
-        public static void DestroyTheBase(UnMovable collidedObject)
-        {
-            theBase = null;
-        }
-
-        public static void DestroyEnemy(Enemy enemy)
-        {
-
-        }
-            
-
-
         private static void EnemyCreate()
         {
             enemyCreateCount++;
@@ -177,27 +144,6 @@ namespace TankGame
             EnemyType tanktype = (EnemyType)rd.Next(0, (int)EnemyType.Count);
             Enemy tank = new Enemy(position.X, position.Y, WindowWidth, WindowHeight, tanktype);
             enemyTankList.Add(tank);
-        }
-
-        // TODO: 四叉树优化
-        public static UnMovable CollidedWhichWall(Rectangle rect)
-        {
-            // 墙体
-            foreach (var list in wallList.Values)
-            {
-                foreach (UnMovable wall in list)
-                {
-                    if (wall.GetRectangle().IntersectsWith(rect))
-                    {
-                        return wall;
-                    }
-                }
-            }
-            // 基地
-            if (theBase != null && theBase.GetRectangle().IntersectsWith(rect))
-                return theBase;
-
-            return null;
         }
 
         // x,y: grid axis
@@ -227,6 +173,72 @@ namespace TankGame
         {
             theBase = new UnMovable(x * gridWidth, y * gridHeight, Properties.Resources.Base, UnmovableType.TheBase);
         }
+
+        public static void DestroyBullet()
+        {
+            List<Bullet> needDestroy = new List<Bullet>();
+            foreach(Bullet bullet in bulletList)
+            {
+                if(bullet.isDestroy)
+                {
+                    needDestroy.Add(bullet);
+                }
+            }
+            foreach(Bullet bullet in needDestroy)
+            {
+                bulletList.Remove(bullet);
+            }
+        }
+
+        public static void DestroyWall(UnMovable wall)
+        {
+            wallList[UnmovableType.Wall].Remove(wall);
+        }
+
+        public static void DestroyTheBase(UnMovable collidedObject)
+        {
+            theBase = null;
+        }
+
+        public static void DestroyEnemy(Enemy enemy)
+        {
+            enemyTankList.Remove(enemy);
+        }
+            
+
+        // TODO: 四叉树优化
+        public static UnMovable CollidedWhichWall(Rectangle rect)
+        {
+            // 墙体
+            foreach (var list in wallList.Values)
+            {
+                foreach (UnMovable wall in list)
+                {
+                    if (wall.GetRectangle().IntersectsWith(rect))
+                    {
+                        return wall;
+                    }
+                }
+            }
+            // 基地
+            if (theBase != null && theBase.GetRectangle().IntersectsWith(rect))
+                return theBase;
+
+            return null;
+        }
+
+        public static Enemy CollidedWichEnemy(Rectangle rect)
+        {
+            foreach(Enemy enemy in enemyTankList)
+            {
+                if(enemy.GetRectangle().IntersectsWith(rect))
+                {
+                    return enemy;
+                }
+            }
+            return null;
+        }
+
 
         public static void KeyDown(KeyEventArgs args)
         {

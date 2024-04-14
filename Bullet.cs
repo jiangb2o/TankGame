@@ -62,9 +62,8 @@ namespace TankGame
             }
 
             // 碰撞检测
-            // Wall: wall, steel
+            // Unmovable: wall, steel, base
             // enemy
-            // base
             Rectangle rect = GetRectangle();
             UnMovable collidedObject = null;
             collidedObject = GameObjectManager.CollidedWhichWall(rect);
@@ -81,6 +80,17 @@ namespace TankGame
                 }
             }
 
+            // 与敌人进行碰撞检测
+            if(this.BelongTo == BulletBelong.Player)
+            {
+                Enemy enemy = null;
+                enemy = GameObjectManager.CollidedWichEnemy(rect);
+                if(enemy != null)
+                {
+                    isDestroy = true;
+                    GameObjectManager.DestroyEnemy(enemy);
+                }
+            }
         }
     }
 }
