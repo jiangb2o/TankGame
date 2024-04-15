@@ -98,10 +98,15 @@ namespace TankGame
                 case Direction.Left: rectNext.X -= Speed; break;
                 case Direction.Right: rectNext.X += Speed; break;
             }
-            if (GameObjectManager.CollidedWhichWall(rectNext) != null)
+            List<GameObject> collided = GameObjectManager.Collided(rectNext ,this);
+            if(collided.Count > 0)
             {
                 IsMoving = false;
             }
+            //if (GameObjectManager.CollidedWhichWall(rectNext) != null)
+            //{
+            //    IsMoving = false;
+            //}
         }
 
         private void Attack()
