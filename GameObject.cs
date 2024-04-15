@@ -16,6 +16,8 @@ namespace TankGame
         public int Width { get; set; }
         public int Height { get; set; }
 
+        public bool IsDestroy = false;
+
         protected abstract Image GetImage();
         protected abstract Pen GetPen();
 

@@ -299,7 +299,6 @@ namespace TankGame
             }
         }
 
-        // TODO: 四叉树优化
         public static UnMovable CollidedWhichWall(Rectangle rect)
         {
             // 墙体
@@ -341,6 +340,8 @@ namespace TankGame
             return null;
         }
 
+        // TODO 利用多个四叉树存储不同类的物体
+        // 子弹会检测与坦克的碰撞, 所以坦克不需要再检测与坦克的碰撞
         public static List<GameObject> Collided(Rectangle rect, GameObject self)
         {
             List<GameObject> collidedObject = new List<GameObject>();
@@ -349,6 +350,14 @@ namespace TankGame
 
             foreach(var obj in canCollide)
             {
+                //if(self.GetType() == typeof(Enemy) && obj.GetType() == typeof(Bullet))
+                //{
+                //    continue;
+                //}
+                //if (self.GetType() == typeof(Bullet) && obj.GetType() == typeof(Bullet))
+                //{
+                //    continue;
+                //}
                 if (obj != self && rect.IntersectsWith(obj.GetRectangle()))
                 {
                     collidedObject.Add(obj);

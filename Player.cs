@@ -98,8 +98,8 @@ namespace TankGame
                 case Direction.Left: rectNext.X -= Speed; break;
                 case Direction.Right: rectNext.X += Speed; break;
             }
-            List<GameObject> collided = GameObjectManager.Collided(rectNext ,this);
-            if(collided.Count > 0)
+            List<GameObject> collidedList = GameObjectManager.Collided(rectNext ,this);
+            if(collidedList.Count > 0)
             {
                 IsMoving = false;
             }

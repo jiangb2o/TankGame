@@ -16,7 +16,6 @@ namespace TankGame
     class Bullet : Movable
     {
         public BulletBelong BelongTo;
-        public bool IsDestroy = false;
 
         public Bullet(int x, int y, int speed, int windowWidth, int windowHeight, Direction dir, BulletBelong belong)
         {
@@ -67,53 +66,94 @@ namespace TankGame
             // Unmovable: wall, steel, base
             // enemy
             Rectangle rect = GetRectangle();
-            UnMovable collidedObject = null;
-            collidedObject = GameObjectManager.CollidedWhichWall(rect);
-            if (collidedObject != null)
+            List<GameObject> collidedList = GameObjectManager.Collided(rect, this);
+            for(int i = 0; i < collidedList.Count; ++i)
             {
+                // 玩家子弹不与玩家进行检测, 敌人子弹不与敌人进行检测
+                if(this.BelongTo == BulletBelong.Player && collidedList[i].GetType() == typeof(Player))
+                {
+                    continue;
+                } else if (this.BelongTo == BulletBelong.Enemy && collidedList[i].GetType() == typeof(Enemy))
+                {
+                    continue;
+                }
+
                 IsDestroy = true;
-                if (collidedObject.MyType == UnmovableType.Steel)
+                if(collidedList[i].GetType() == typeof(UnMovable))
                 {
-                    //SoundManager.Playhit();
-                } else
-                {
-                    if (collidedObject.MyType == UnmovableType.Wall)
+                    UnMovable tmp = (UnMovable)collidedList[i];
+                    if (tmp.MyType == UnmovableType.Wall)
                     {
-                        GameObjectManager.DestroyWall(collidedObject);                    }
-                    else if (collidedObject.MyType == UnmovableType.TheBase)
+                        GameObjectManager.DestroyWall(tmp);
+                    }
+                    else if (tmp.MyType == UnmovableType.TheBase)
                     {
-                        GameObjectManager.DestroyTheBase(collidedObject);
+                        GameObjectManager.DestroyTheBase(tmp);
                         GameFramwork.GameOver();
                     }
                     SoundManager.PlayBlast();
-                    GameObjectManager.CreateAnimation(xAnimation, yAnimation, AnimationType.Explosion);
+                } else if (this.BelongTo == BulletBelong.Player && collidedList[i].GetType() == typeof(Enemy))
+                {
+                    collidedList[i].IsDestroy = true;
+                    SoundManager.PlayBlast();
+                } else if (this.BelongTo == BulletBelong.Enemy && collidedList[i].GetType() == typeof(Player))
+                {
+                    collidedList[i].IsDestroy = true;
+                    Player tmp = (Player)collidedList[i];
+                    tmp.TakeDamage();
+                    SoundManager.PlayHit();
                 }
+                GameObjectManager.CreateAnimation(xAnimation, yAnimation, AnimationType.Explosion);
+                break;
             }
 
-            // 与敌人进行碰撞检测
-            if(this.BelongTo == BulletBelong.Player)
-            {
-                Enemy enemy = null;
-                enemy = GameObjectManager.CollidedWichEnemy(rect);
-                if(enemy != null)
-                {
-                    IsDestroy = true;
-                    enemy.IsDestroy = true;
-                    SoundManager.PlayBlast();
-                    GameObjectManager.CreateAnimation(xAnimation, yAnimation, AnimationType.Explosion);
-                }
-            } else if (this.BelongTo == BulletBelong.Enemy)
-            {
-                Player player = null;
-                player = GameObjectManager.CollidedPlayer(rect);
-                if(player != null)
-                {
-                    IsDestroy = true;
-                    player.TakeDamage();
-                    SoundManager.PlayHit();
-                    GameObjectManager.CreateAnimation(xAnimation, yAnimation, AnimationType.Explosion);
-                }
-            }
+            //UnMovable collidedObject = null;
+            //collidedObject = GameObjectManager.CollidedWhichWall(rect);
+            //if (collidedObject != null)
+            //{
+            //    IsDestroy = true;
+            //    if (collidedObject.MyType == UnmovableType.Steel)
+            //    {
+            //        //SoundManager.Playhit();
+            //    } else
+            //    {
+            //        if (collidedObject.MyType == UnmovableType.Wall)
+            //        {
+            //            GameObjectManager.DestroyWall(collidedObject);                    }
+            //        else if (collidedObject.MyType == UnmovableType.TheBase)
+            //        {
+            //            GameObjectManager.DestroyTheBase(collidedObject);
+            //            GameFramwork.GameOver();
+            //        }
+            //        SoundManager.PlayBlast();
+            //        GameObjectManager.CreateAnimation(xAnimation, yAnimation, AnimationType.Explosion);
+            //    }
+            //}
+
+            //// 与敌人进行碰撞检测
+            //if(this.BelongTo == BulletBelong.Player)
+            //{
+            //    Enemy enemy = null;
+            //    enemy = GameObjectManager.CollidedWichEnemy(rect);
+            //    if(enemy != null)
+            //    {
+            //        IsDestroy = true;
+            //        enemy.IsDestroy = true;
+            //        SoundManager.PlayBlast();
+            //        GameObjectManager.CreateAnimation(xAnimation, yAnimation, AnimationType.Explosion);
+            //    }
+            //} else if (this.BelongTo == BulletBelong.Enemy)
+            //{
+            //    Player player = null;
+            //    player = GameObjectManager.CollidedPlayer(rect);
+            //    if(player != null)
+            //    {
+            //        IsDestroy = true;
+            //        player.TakeDamage();
+            //        SoundManager.PlayHit();
+            //        GameObjectManager.CreateAnimation(xAnimation, yAnimation, AnimationType.Explosion);
+            //    }
+            //}
             
         }
     }
