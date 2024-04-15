@@ -17,11 +17,18 @@ namespace TankGame
         public int Height { get; set; }
 
         protected abstract Image GetImage();
+        protected abstract Pen GetPen();
 
         public virtual void DrawSelf()
         {
             Graphics g = GameFramwork.g;
-            g.DrawImage(GetImage(), X, Y);
+            if(GameFramwork.DrawMode == DrawMode.Normal)
+            {
+                g.DrawImage(GetImage(), X, Y);
+            } else
+            {
+                g.DrawRectangle(GetPen(), X, Y, Width, Height);
+            }
         }
 
         public virtual void Update()

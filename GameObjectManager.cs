@@ -288,7 +288,20 @@ namespace TankGame
 
         public static void KeyDown(KeyEventArgs args)
         {
-            player.KeyDown(args);
+            // 切换模式
+            if(args.KeyCode == Keys.M)
+            {
+                if(GameFramwork.DrawMode == DrawMode.Normal)
+                {
+                    GameFramwork.DrawMode = DrawMode.Rectangle;
+                } else
+                {
+                    GameFramwork.DrawMode = DrawMode.Normal;
+                }
+            } else
+            {
+                player.KeyDown(args);
+            }
         }
 
         public static void KeyUp(KeyEventArgs args)

@@ -13,6 +13,12 @@ namespace TankGame
         Running,
         GameOver,
     }
+    enum DrawMode
+    { 
+        Normal,
+        Rectangle
+    }
+
     class GameFramwork
     {
         public static Graphics g;
@@ -20,6 +26,8 @@ namespace TankGame
 
         private static int windowWidth;
         private static int windowHeight;
+
+        public static DrawMode DrawMode = DrawMode.Normal;
 
 
         public static void SetWindowSize(int width, int height)

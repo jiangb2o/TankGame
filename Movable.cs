@@ -75,6 +75,11 @@ namespace TankGame
             }
         }
 
+        protected override Pen GetPen()
+        {
+            return new Pen(Color.Yellow);
+        }
+
         protected override Image GetImage()
         {
             Bitmap matchBitmap = null;

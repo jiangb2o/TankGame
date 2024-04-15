@@ -18,6 +18,11 @@ namespace TankGame
 
         public UnmovableType MyType { get; set; }
 
+        protected override Pen GetPen()
+        {
+            return new Pen(Color.Green);
+        }
+
         protected override Image GetImage()
         {
             return Img;

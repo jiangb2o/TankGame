@@ -28,7 +28,6 @@ namespace TankGame
         private static int[] enemySpeed = new int[(int)EnemyType.Count];
         
 
-
         private static Random rd = new Random();
 
         public static void InitializationEnemy()

@@ -14,7 +14,7 @@ namespace TankGame
 
     class Animation : GameObject
     {
-        private int playSpeed = 1;
+        private int playSpeed = 2;
         private int playCount = 0;
 
         private int index = 0;
@@ -51,6 +51,11 @@ namespace TankGame
                 };
         }
 
+        protected override Pen GetPen()
+        {
+            return new Pen(Color.Red);
+        }
+
         protected override Image GetImage()
         {
             return bmpArray[index];
@@ -66,6 +71,8 @@ namespace TankGame
                 PlayOver = true;
                 return;
             }
+            Width = bmpArray[index].Width;
+            Height = bmpArray[index].Height;
             base.DrawSelf();
         }
     }
