@@ -24,6 +24,8 @@ namespace TankGame
         private int turnSpeed { get; set; }
         private int turnCount = 0;
 
+        public bool IsDestroy = false;
+
         private static Bitmap[][] enemyBitmap = new Bitmap[(int)EnemyType.Count][];
         private static int[] enemySpeed = new int[(int)EnemyType.Count];
         
@@ -99,9 +101,21 @@ namespace TankGame
                 case Direction.Left: rectNext.X -= Speed; break;
                 case Direction.Right: rectNext.X += Speed; break;
             }
-            if (GameObjectManager.CollidedWhichWall(rectNext) != null)
+            //if (GameObjectManager.CollidedWhichWall(rectNext) != null)
+            //{
+            //    ChangeDirection();
+            //}
+            List<GameObject> collided = GameObjectManager.Collided(rectNext, this);
+            foreach(var collidedObj in collided)
             {
-                ChangeDirection();
+                // 包含了与墙和player以及别的enemy tank的碰撞
+                // 若在当前位置重生了一个坦克, 则无论如何ChangeDirection都会碰撞, 造成溢出.
+                if(collidedObj.GetType() != typeof(Bullet))
+                {
+                    Console.WriteLine(collidedObj.GetType());
+                    ChangeDirection();
+                    return;
+                }
             }
         }
 

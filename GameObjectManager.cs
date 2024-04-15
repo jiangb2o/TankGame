@@ -63,9 +63,10 @@ namespace TankGame
 
         public static void Update()
         {
+            BuildQuadTree();
+
             CreateEnemy();
 
-            BuildQuadTree();
             if(isShowQuadTree)
             {
                 quadTree.Draw();
@@ -99,6 +100,7 @@ namespace TankGame
                 }
             }
             DestroyBullet();
+            DestroyEnemy();
 
             foreach(Animation animation in animationList)
             {
@@ -161,7 +163,6 @@ namespace TankGame
             enemyCreateCount++;
             if (enemyCreateCount < enemyCreateSpeed) return;
 
-            SoundManager.PlayAdd();
             enemyCreateCount = 0;
 
             Random rd = new Random();
@@ -170,7 +171,14 @@ namespace TankGame
 
             EnemyType tanktype = (EnemyType)rd.Next(0, (int)EnemyType.Count);
             Enemy tank = new Enemy(position.X, position.Y, WindowWidth, WindowHeight, tanktype);
+
+            // 生成位置发生碰撞, 
+            if (Collided(tank.GetRectangle(), tank).Count != 0) return;
+
+            SoundManager.PlayAdd();
             enemyTankList.Add(tank);
+            quadTree.Insert(tank);
+
         }
 
         public static void CreateAnimation(int x, int y, AnimationType animationType)
@@ -233,9 +241,20 @@ namespace TankGame
             theBase = null;
         }
 
-        public static void DestroyEnemy(Enemy enemy)
+        public static void DestroyEnemy()
         {
-            enemyTankList.Remove(enemy);
+            List<Enemy> needDestroy = new List<Enemy>();
+            foreach (Enemy enemy in enemyTankList)
+            {
+                if (enemy.IsDestroy)
+                {
+                    needDestroy.Add(enemy);
+                }
+            }
+            foreach (Enemy enemy in needDestroy)
+            {
+                enemyTankList.Remove(enemy);
+            }
         }
 
         public static void DestroyAnimation()

@@ -98,7 +98,7 @@ namespace TankGame
                 if(enemy != null)
                 {
                     IsDestroy = true;
-                    GameObjectManager.DestroyEnemy(enemy);
+                    enemy.IsDestroy = true;
                     SoundManager.PlayBlast();
                     GameObjectManager.CreateAnimation(xAnimation, yAnimation, AnimationType.Explosion);
                 }

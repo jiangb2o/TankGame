@@ -34,7 +34,7 @@ namespace TankGame
             set
             {
                 dir = value;
-                Bitmap bmp = null;
+                Bitmap bmp = BitmapUp;
 
                 switch (dir)
                 {
