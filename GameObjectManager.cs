@@ -48,6 +48,9 @@ namespace TankGame
         // 初始生成一个敌人
         private static int enemyCreateCount = 60;
 
+        private static QuadTree quadTree;
+        private static bool isShowQuadTree = false;
+
         public static void Start()
         {
             enemyInitialPostions = new Point[3];
@@ -60,6 +63,14 @@ namespace TankGame
 
         public static void Update()
         {
+            CreateEnemy();
+
+            BuildQuadTree();
+            if(isShowQuadTree)
+            {
+                quadTree.Draw();
+            }
+
             foreach (var list in wallList.Values)
             {
                 foreach (UnMovable wall in list)
@@ -67,6 +78,7 @@ namespace TankGame
                     wall.Update();
                 }
             }
+
             if(theBase != null)
             {
                 theBase.Update();
@@ -74,7 +86,6 @@ namespace TankGame
 
             player.Update();
 
-            CreateEnemy();
             foreach (var tank in enemyTankList)
             {
                 tank.Update();
@@ -243,6 +254,31 @@ namespace TankGame
             }
         }
             
+        private static void BuildQuadTree()
+        {
+            quadTree = new QuadTree(0, new Rectangle(0, 0, WindowWidth, WindowHeight));
+            foreach (var list in wallList.Values)
+            {
+                foreach (UnMovable wall in list)
+                {
+                    quadTree.Insert(wall);
+                }
+            }
+            if(theBase != null)
+            {
+                quadTree.Insert(theBase);
+            }
+            quadTree.Insert(player);
+            foreach (var tank in enemyTankList)
+            {
+                quadTree.Insert(tank);
+            }
+
+            foreach (var bullet in bulletList)
+            {
+                quadTree.Insert(bullet);
+            }
+        }
 
         // TODO: 四叉树优化
         public static UnMovable CollidedWhichWall(Rectangle rect)
@@ -286,10 +322,26 @@ namespace TankGame
             return null;
         }
 
+        public static List<GameObject> Collided(Rectangle rect, GameObject self)
+        {
+            List<GameObject> collidedObject = new List<GameObject>();
+            List<GameObject> canCollide = new List<GameObject>();
+            quadTree.Retrieve(rect, canCollide);
+
+            foreach(var obj in canCollide)
+            {
+                if (obj != self && rect.IntersectsWith(obj.GetRectangle()))
+                {
+                    collidedObject.Add(obj);
+                }
+            }
+            return collidedObject;
+        }
+
         public static void KeyDown(KeyEventArgs args)
         {
             // 切换模式
-            if(args.KeyCode == Keys.M)
+            if(args.KeyCode == Keys.Z)
             {
                 if(GameFramwork.DrawMode == DrawMode.Normal)
                 {
@@ -298,6 +350,9 @@ namespace TankGame
                 {
                     GameFramwork.DrawMode = DrawMode.Normal;
                 }
+            } else if(args.KeyCode == Keys.X)
+            {
+                isShowQuadTree = !isShowQuadTree;
             } else
             {
                 player.KeyDown(args);
