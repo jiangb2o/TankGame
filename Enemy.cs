@@ -23,6 +23,7 @@ namespace TankGame
         private int attackCount = 0;
         private int turnSpeed { get; set; }
         private int turnCount = 0;
+        private int frameToMoveBlock;
 
         private static Bitmap[][] enemyBitmap = new Bitmap[(int)EnemyType.Count][];
         private static int[] enemySpeed = new int[(int)EnemyType.Count];
@@ -47,7 +48,7 @@ namespace TankGame
             enemySpeed[(int)EnemyType.Gray] = 2;
             enemySpeed[(int)EnemyType.Green] = 2;
             enemySpeed[(int)EnemyType.Slow] = 1;
-            enemySpeed[(int)EnemyType.Quick] = 4;
+            enemySpeed[(int)EnemyType.Quick] = 5;
         }
 
         public Enemy(int x, int y, int windowWidth, int windowHeight, EnemyType enemyType, Direction dir = Direction.Down)
@@ -67,6 +68,7 @@ namespace TankGame
             this.Dir = dir;
             this.attackSpeed = rd.Next(30,100);
             this.turnSpeed = rd.Next(50, 100);
+
         }
 
         public override void Update()
@@ -143,7 +145,8 @@ namespace TankGame
         {
             attackCount++;
             if (attackCount < attackSpeed) return;
-            
+
+            attackSpeed = rd.Next(30, 100);
             attackCount = 0;
             Attack();
             

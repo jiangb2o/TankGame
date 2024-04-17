@@ -65,6 +65,7 @@
     <Compile Include="QuadTree.cs" />
     <Compile Include="SoundManager.cs" />
     <Compile Include="UnMovable.cs" />
+    <Compile Include="PathFinding.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

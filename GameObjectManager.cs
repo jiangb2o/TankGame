@@ -59,6 +59,7 @@ namespace TankGame
             enemyInitialPostions[2] = new Point(24 * gridWidth, 0);
 
             Enemy.InitializationEnemy();
+            PathFinding.InitMapGrid(gridWidth, gridHeight, WindowWidth, WindowHeight);
         }
 
         public static void Update()
@@ -293,10 +294,11 @@ namespace TankGame
                 quadTree.Insert(tank);
             }
 
-            foreach (var bullet in bulletList)
-            {
-                quadTree.Insert(bullet);
-            }
+            // 子弹不需要放入四叉树中, 其他物体不会和子弹进行碰撞检测.
+            //foreach (var bullet in bulletList)
+            //{
+            //    quadTree.Insert(bullet);
+            //}
         }
 
         public static UnMovable CollidedWhichWall(Rectangle rect)
