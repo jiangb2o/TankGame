@@ -40,6 +40,11 @@ namespace TankGame
 
 
         }
+
+        [System.Runtime.InteropServices.DllImport("winmm")]
+        static extern uint timeGetTime();
+
+
         // 静态方法, 直接通过类调用
         private static void GameMainThread()
         {
@@ -47,22 +52,42 @@ namespace TankGame
             GameFramwork.SetWindowSize(windowWidth, windowHeight);
             GameFramwork.Start();
 
-            int sleepTime = 1000 / 60;
-
+            float sleepTime = 1000 / 75;
+            int cnt = 0;
+            uint frameBegin = timeGetTime();
             while(true)
             {
                 // 先清空画布为黑色, 再绘制物体, 会出现闪烁
                 // GameFramwork.g = windowGraphics;
                 // GameFramwork.Clear(Color.Blcak);
                 // GameFramwork.Update();
-
+                
+                uint begin = timeGetTime();
+                
                 // 先全部绘制到临时画布, 再将临时画布一次性绘制到窗口
                 GameFramwork.g.Clear(Color.Black);
                 GameFramwork.Update();
                 windowGraphics.DrawImage(tmpBitmap, 0, 0);
 
+                cnt++;
+                if (cnt == 10)
+                {
+                    uint deltaTime = timeGetTime() - frameBegin;
+                    Console.WriteLine(cnt / (float)deltaTime * 1000 + "fps");
+
+                    cnt = 0;
+                    frameBegin = timeGetTime();
+                }
+
+                uint end = timeGetTime();
+
                 // 60 fps is enough
-                Thread.Sleep(sleepTime);
+                if (sleepTime - (end - begin) > 0)
+                {
+                    Thread.Sleep((int)(sleepTime - (end - begin)));
+                }
+
+
             }
 
         }
